@@ -26,12 +26,8 @@ public class ProductController {
     }
 
     @PutMapping("/updateProduct")
-    public String updateProduct() {
-        return "Product Updated!";
+    public ProductDTO updateProduct(@RequestBody ProductDTO productDTO) {
+        return productService.updateProduct(productDTO);
     }
 
-    @DeleteMapping("/deleteProduct")
-    public String deleteProduct() {
-        return "Product Deleted!";
-    }
 }

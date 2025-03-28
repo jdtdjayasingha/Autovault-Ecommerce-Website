@@ -33,4 +33,10 @@ public class ProductService {
         productRepo.save(modelMapper.map(productDTO, Product.class));
         return productDTO ;
     }
+
+    public ProductDTO updateProduct(ProductDTO productDTO){
+        productRepo.save(modelMapper.map(productDTO, Product.class));
+        return productDTO ;
+    }
+    
 }
