@@ -29,4 +29,8 @@ public class ProductService {
         }.getType());
     }
 
+    public ProductDTO saveProduct(ProductDTO productDTO){
+        productRepo.save(modelMapper.map(productDTO, Product.class));
+        return productDTO ;
+    }
 }

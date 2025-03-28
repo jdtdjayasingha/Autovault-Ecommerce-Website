@@ -20,6 +20,11 @@ public class ProductController {
         return productService.getALlProducts();
     }
 
+    @PostMapping("/saveProduct")
+    public ProductDTO saveProduct(@RequestBody ProductDTO productDTO) {
+        return productService.saveProduct(productDTO);
+    }
+
     @PutMapping("/updateProduct")
     public String updateProduct() {
         return "Product Updated!";
