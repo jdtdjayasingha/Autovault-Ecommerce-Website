@@ -73,63 +73,64 @@ const App = () => {
   }, []);
 
   return (
-    <div style={{ alignItems: "center", textAlign: "center" }}>
-      <h1>Autovault Admin Module</h1>
+    <div className="flex flex-col items-center text-center p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">
+        Autovault Admin Module
+      </h1>
+      {message && <p className="text-green-500 mb-4">{message}</p>}
 
-      {message && <p>{message}</p>}
-
-      <div>
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
         <input
-          style={{ padding: "10px" }}
+          className="w-full p-2 border border-gray-300 rounded mb-4"
           type="text"
           placeholder="Vehicle ID"
           value={productId}
           onChange={(e) => setProductId(e.target.value)}
         />
-        <br />
-        <br />
         <input
-          style={{ padding: "10px", width: "300px" }}
+          className="w-full p-2 border border-gray-300 rounded mb-4"
           type="text"
           placeholder="Vehicle Name"
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
         />
-        <br />
-        <br />
         <button
-          style={{ padding: "10px", width: "100px" }}
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
           onClick={saveProduct}
         >
           {productId ? "Save" : "Save"}
         </button>
       </div>
 
-      <div>
-        <h2>Product List</h2>
-        <ul>
+      <div className="mt-6 w-full max-w-lg">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          Product List
+        </h2>
+        <ul className="bg-white p-4 rounded-lg shadow-md">
           {products.map((product) => (
-            <li key={product.id}>
-              {product.id}{" "}
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {product.name}{" "}
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <button
-                style={{ padding: "5px", width: "50px" }}
-                onClick={() => {
-                  setProductId(product.id);
-                  setProductName(product.name);
-                }}
-              >
-                Edit
-              </button>{" "}
-              &nbsp;
-              <button
-                style={{ padding: "5px", width: "50px" }}
-                onClick={() => deleteProduct(product.id)}
-              >
-                Delete
-              </button>
+            <li
+              key={product.id}
+              className="flex justify-between items-center border-b border-gray-200 p-2 last:border-none"
+            >
+              <span className="text-gray-700">{product.id}</span>
+              <span className="text-gray-700">{product.name}</span>
+              <div>
+                <button
+                  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2 hover:bg-yellow-600 transition"
+                  onClick={() => {
+                    setProductId(product.id);
+                    setProductName(product.name);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                  onClick={() => deleteProduct(product.id)}
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>
