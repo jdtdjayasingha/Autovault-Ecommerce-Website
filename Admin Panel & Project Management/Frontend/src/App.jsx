@@ -3,6 +3,8 @@ import axios from "axios";
 
 export default function App() {
   const [productName, setProductName] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -25,13 +27,15 @@ export default function App() {
   // Handle Create and Update
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!productName || !file) {
-      setMessage("Please enter a product name and select an image.");
+    if (!productName || !file || !price || !description) {
+      setMessage("Please enter all fields: name, price, description, and select an image.");
       return;
     }
 
     const formData = new FormData();
     formData.append("name", productName);
+    formData.append("price", price);  // Add price to FormData
+    formData.append("description", description);  // Add description to FormData
     formData.append("file", file);
 
     try {
@@ -50,6 +54,8 @@ export default function App() {
       }
 
       setProductName("");
+      setPrice("");
+      setDescription("");
       setFile(null);
       setEditingProduct(null);
       fetchProducts();
@@ -74,6 +80,8 @@ export default function App() {
   // Set product for editing
   const handleEdit = (product) => {
     setProductName(product.name);
+    setPrice(product.price);
+    setDescription(product.description);
     setEditingProduct(product);
   };
 
@@ -90,6 +98,21 @@ export default function App() {
             placeholder="Product Name"
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
+            className="border p-2 rounded"
+            required
+          />
+          <input
+            type="number"
+            placeholder="Price"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className="border p-2 rounded"
+            required
+          />
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             className="border p-2 rounded"
             required
           />
@@ -123,6 +146,8 @@ export default function App() {
                 />
                 <div className="flex-grow">
                   <p className="font-semibold">{product.name}</p>
+                  <p>RS {product.price} .00</p>
+                  <p>{product.description}</p>
                 </div>
                 <button
                   onClick={() => handleEdit(product)}

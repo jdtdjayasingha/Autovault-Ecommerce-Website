@@ -18,40 +18,46 @@ public class AdminService {
         this.productDetailsRepository = productDetailsRepository;
     }
 
-    // ✅ CREATE Product
-    public ProductDetails saveProduct(String name, MultipartFile file) throws IOException {
+    public ProductDetails saveProduct(String name, double price, String description, MultipartFile file) throws IOException {
         ProductDetails product = new ProductDetails();
         product.setName(name);
-        product.setImageData(file.getBytes());
+        product.setPrice(price);  // Set price
+        product.setDescription(description);  // Set description
+
+        if (file != null && !file.isEmpty()) {
+            product.setImageData(file.getBytes());
+        }
+
         return productDetailsRepository.save(product);
     }
 
-    // ✅ READ (Get All Products)
     public List<ProductDetails> getAllProducts() {
         return productDetailsRepository.findAll();
     }
 
-    // ✅ UPDATE Product
-    public Optional<ProductDetails> updateProduct(Long id, String name, MultipartFile file) throws IOException {
-        Optional<ProductDetails> existingProductOpt = productDetailsRepository.findById(id);
-        if (existingProductOpt.isEmpty()) {
-            return Optional.empty();
-        }
+    public Optional<ProductDetails> updateProduct(Long id, String name, double price, String description, MultipartFile file) throws IOException {
+        Optional<ProductDetails> existingProduct = productDetailsRepository.findById(id);
 
-        ProductDetails existingProduct = existingProductOpt.get();
-        existingProduct.setName(name);
-        if (file != null && !file.isEmpty()) {
-            existingProduct.setImageData(file.getBytes());
+        if (existingProduct.isPresent()) {
+            ProductDetails product = existingProduct.get();
+            product.setName(name);
+            product.setPrice(price);  // Update price
+            product.setDescription(description);  // Update description
+
+            if (file != null && !file.isEmpty()) {
+                product.setImageData(file.getBytes());
+            }
+
+            return Optional.of(productDetailsRepository.save(product));
         }
-        return Optional.of(productDetailsRepository.save(existingProduct));
+        return Optional.empty();
     }
 
-    // ✅ DELETE Product
     public boolean deleteProduct(Long id) {
-        if (!productDetailsRepository.existsById(id)) {
-            return false;
+        if (productDetailsRepository.existsById(id)) {
+            productDetailsRepository.deleteById(id);
+            return true;
         }
-        productDetailsRepository.deleteById(id);
-        return true;
+        return false;
     }
 }

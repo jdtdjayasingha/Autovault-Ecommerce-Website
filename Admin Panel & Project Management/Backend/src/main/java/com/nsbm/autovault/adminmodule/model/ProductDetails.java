@@ -7,15 +7,17 @@ public class ProductDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Ensure this field exists
+    private Long id;
 
     private String name;
+    private double price; // Price field
+    private String description; // Description field
 
     @Lob
     private byte[] imageData;
 
     // Getters and Setters
-    public Long getId() {  // Add this method
+    public Long getId() {
         return id;
     }
 
@@ -31,6 +33,22 @@ public class ProductDetails {
         this.name = name;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public byte[] getImageData() {
         return imageData;
     }
@@ -39,5 +57,3 @@ public class ProductDetails {
         this.imageData = imageData;
     }
 }
-
-
