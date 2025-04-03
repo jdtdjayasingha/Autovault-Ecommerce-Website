@@ -1,11 +1,12 @@
 package com.nsbm.autovault.adminmodule.service;
 
-import com.nsbm.autovault.adminmodule.model.Image;
+import com.nsbm.autovault.adminmodule.model.ImageEntity;
 import com.nsbm.autovault.adminmodule.repo.ImageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class ImageService {
@@ -15,19 +16,39 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public Image saveImage(MultipartFile file) throws IOException {
-        Image image = new Image();
+    public ImageEntity saveImage(MultipartFile file) throws IOException {
+        ImageEntity image = new ImageEntity();
         image.setName(file.getOriginalFilename());
-        image.setType(file.getContentType());
-        image.setData(file.getBytes());
+        image.setImageData(file.getBytes());
         return imageRepository.save(image);
     }
 
-    public Optional<Image> getImage(Long id) {
-        return imageRepository.findById(id);
+    public ImageEntity getImage(Long id) {
+        return imageRepository.findById(id).orElse(null);
     }
 
-    public void deleteImage(Long id) {
-        imageRepository.deleteById(id);
+    // New method to fetch all images
+    public List<ImageEntity> getAllImages() {
+        return imageRepository.findAll();
     }
+
+    public ImageEntity updateImage(Long id, MultipartFile file) throws IOException {
+        ImageEntity existingImage = imageRepository.findById(id).orElse(null);
+        if (existingImage == null) {
+            return null;  // Image not found
+        }
+
+        existingImage.setName(file.getOriginalFilename());
+        existingImage.setImageData(file.getBytes());
+        return imageRepository.save(existingImage);
+    }
+
+    public boolean deleteImage(Long id) {
+        if (!imageRepository.existsById(id)) {
+            return false;  // Image not found
+        }
+        imageRepository.deleteById(id);
+        return true;
+    }
+
 }

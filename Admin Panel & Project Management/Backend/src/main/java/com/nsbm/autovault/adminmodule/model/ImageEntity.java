@@ -1,23 +1,21 @@
 package com.nsbm.autovault.adminmodule.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "images")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Image {
+public class ImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String type;
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] data;
+    @Lob  // Large Object for storing binary data
+    private byte[] imageData;
 }
+
