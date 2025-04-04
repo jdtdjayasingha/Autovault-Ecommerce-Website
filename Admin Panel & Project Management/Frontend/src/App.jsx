@@ -1,142 +1,171 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
-const App = () => {
-  const [products, setProducts] = useState([]);
+export default function App() {
   const [productName, setProductName] = useState("");
-  const [productId, setProductId] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [file, setFile] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [message, setMessage] = useState("");
 
-  const getProducts = async () => {
+  // Fetch all products
+  const fetchProducts = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/v1/product/getProduct"
-      );
+      const response = await axios.get("http://localhost:8080/admin/products");
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  const saveProduct = async () => {
-    if (!productName) {
-      setMessage("Product name cannot be empty");
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Handle Create and Update
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!productName || !file || !price || !description) {
+      setMessage("Please enter all fields: name, price, description, and select an image.");
       return;
     }
 
+    const formData = new FormData();
+    formData.append("name", productName);
+    formData.append("price", price);  // Add price to FormData
+    formData.append("description", description);  // Add description to FormData
+    formData.append("file", file);
+
     try {
-      let response;
-      if (productId) {
-        response = await axios.put(
-          "http://localhost:8080/api/v1/product/updateProduct",
-          {
-            id: productId,
-            name: productName,
-          }
-        );
-        setMessage("Product updated successfully");
+      if (editingProduct) {
+        // Update existing product
+        await axios.put(`http://localhost:8080/admin/products/${editingProduct.id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        setMessage("Product updated successfully!");
       } else {
-        response = await axios.post(
-          "http://localhost:8080/api/v1/product/saveProduct",
-          {
-            id: productId,
-            name: productName,
-          }
-        );
-        setMessage("Product saved successfully");
+        // Create new product
+        await axios.post("http://localhost:8080/admin/products", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        setMessage("Product uploaded successfully!");
       }
 
       setProductName("");
-      setProductId("");
-      getProducts();
+      setPrice("");
+      setDescription("");
+      setFile(null);
+      setEditingProduct(null);
+      fetchProducts();
     } catch (error) {
-      console.error("Error saving or updating product:", error);
-      setMessage("Error occurred while saving/updating product");
+      setMessage("Error uploading/updating product.");
+      console.error("Error:", error);
     }
   };
 
-  const deleteProduct = async (id) => {
+  // Handle Delete
+  const handleDelete = async (id) => {
     try {
-      await axios.delete("http://localhost:8080/api/v1/product/deleteProduct", {
-        data: { id },
-      });
-      setMessage("Product deleted successfully");
-      getProducts();
+      await axios.delete(`http://localhost:8080/admin/products/${id}`);
+      setMessage("Product deleted successfully!");
+      fetchProducts();
     } catch (error) {
-      console.error("Error deleting product:", error);
-      setMessage("Error occurred while deleting product");
+      setMessage("Error deleting product.");
+      console.error("Error:", error);
     }
   };
 
-  useEffect(() => {
-    getProducts();
-  }, []);
+  // Set product for editing
+  const handleEdit = (product) => {
+    setProductName(product.name);
+    setPrice(product.price);
+    setDescription(product.description);
+    setEditingProduct(product);
+  };
 
   return (
-    <div className="flex flex-col items-center text-center p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">
-        Autovault Admin Module
-      </h1>
-      {message && <p className="text-green-500 mb-4">{message}</p>}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+      <h1 className="text-2xl font-bold mb-6">Product Management App</h1>
 
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <input
-          className="w-full p-2 border border-gray-300 rounded mb-4"
-          type="text"
-          placeholder="Vehicle ID"
-          value={productId}
-          onChange={(e) => setProductId(e.target.value)}
-        />
-        <input
-          className="w-full p-2 border border-gray-300 rounded mb-4"
-          type="text"
-          placeholder="Vehicle Name"
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
-        />
-        <button
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
-          onClick={saveProduct}
-        >
-          {productId ? "Save" : "Save"}
-        </button>
+      {/* Upload/Update Form */}
+      <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <h2 className="text-xl font-bold mb-4">{editingProduct ? "Update Product" : "Upload Product"}</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="text"
+            placeholder="Product Name"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            className="border p-2 rounded"
+            required
+          />
+          <input
+            type="number"
+            placeholder="Price"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className="border p-2 rounded"
+            required
+          />
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="border p-2 rounded"
+            required
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="border p-2 rounded"
+            required
+          />
+          <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+            {editingProduct ? "Update" : "Upload"}
+          </button>
+        </form>
+        {message && <p className="mt-4 text-center">{message}</p>}
       </div>
 
-      <div className="mt-6 w-full max-w-lg">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
-          Product List
-        </h2>
-        <ul className="bg-white p-4 rounded-lg shadow-md">
-          {products.map((product) => (
-            <li
-              key={product.id}
-              className="flex justify-between items-center border-b border-gray-200 p-2 last:border-none"
-            >
-              <span className="text-gray-700">{product.id}</span>
-              <span className="text-gray-700">{product.name}</span>
-              <div>
+      {/* Display Products */}
+      <div className="mt-8 w-full max-w-2xl">
+        <h2 className="text-xl font-bold mb-4">Uploaded Products</h2>
+        {products.length === 0 ? (
+          <p>No products uploaded yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {products.map((product) => (
+              <div key={product.id} className="flex items-center bg-white p-4 shadow-md rounded-lg">
+                <img
+                  src={`data:image/jpeg;base64,${product.imageData}`}
+                  alt={product.name}
+                  className="w-16 h-16 rounded mr-4"
+                />
+                <div className="flex-grow">
+                  <p className="font-semibold">{product.name}</p>
+                  <p>RS {product.price} .00</p>
+                  <p>{product.description}</p>
+                </div>
                 <button
-                  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2 hover:bg-yellow-600 transition"
-                  onClick={() => {
-                    setProductId(product.id);
-                    setProductName(product.name);
-                  }}
+                  onClick={() => handleEdit(product)}
+                  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2 hover:bg-yellow-600"
                 >
                   Edit
                 </button>
                 <button
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                  onClick={() => deleteProduct(product.id)}
+                  onClick={() => handleDelete(product.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   Delete
                 </button>
               </div>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default App;
+}
