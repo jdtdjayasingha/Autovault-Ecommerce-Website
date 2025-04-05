@@ -9,7 +9,10 @@ export default function ProductList({ products, handleEdit, handleDelete }) {
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {products.map((product) => (
-            <div key={product.id} className="flex items-center bg-white p-4 shadow-md rounded-lg">
+            <div
+              key={product.id}
+              className="flex items-center bg-white p-4 shadow-md rounded-lg"
+            >
               <img
                 src={`data:image/jpeg;base64,${product.imageData}`}
                 alt={product.name}
