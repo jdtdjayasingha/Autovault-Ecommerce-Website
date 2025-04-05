@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductForm from "./components/ProductForm";
+import Header from "./components/Header";
 
 export default function App() {
   const [productName, setProductName] = useState("");
@@ -30,7 +31,9 @@ export default function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!productName || !file || !price || !description) {
-      setMessage("Please enter all fields: name, price, description, and select an image.");
+      setMessage(
+        "Please enter all fields: name, price, description, and select an image."
+      );
       return;
     }
 
@@ -43,9 +46,13 @@ export default function App() {
     try {
       if (editingProduct) {
         // Update existing product
-        await axios.put(`http://localhost:8080/admin/products/${editingProduct.id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await axios.put(
+          `http://localhost:8080/admin/products/${editingProduct.id}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
         setMessage("Product updated successfully!");
       } else {
         // Create new product
@@ -110,70 +117,81 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-6">Product Management App</h1>
-
-      <button
-        onClick={handleOpenForm}
-        className="mb-6 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-      >
-        Add New Product
-      </button>
-
-      {/* Modal Form */}
-      {showForm && (
-        <ProductForm
-          productName={productName}
-          setProductName={setProductName}
-          price={price}
-          setPrice={setPrice}
-          description={description}
-          setDescription={setDescription}
-          file={file}
-          setFile={setFile}
-          handleSubmit={handleSubmit}
-          editingProduct={editingProduct}
-          message={message}
-          onClose={handleCloseForm}
-        />
-      )}
-
-      {/* Display Products */}
-      <div className="mt-8 w-full max-w-2xl">
-        <h2 className="text-xl font-bold mb-4">Uploaded Products</h2>
-        {products.length === 0 ? (
-          <p>No products uploaded yet.</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-4">
-            {products.map((product) => (
-              <div key={product.id} className="flex items-center bg-white p-4 shadow-md rounded-lg">
-                <img
-                  src={`data:image/jpeg;base64,${product.imageData}`}
-                  alt={product.name}
-                  className="w-16 h-16 rounded mr-4 object-cover"
-                />
-                <div className="flex-grow">
-                  <p className="font-semibold">{product.name}</p>
-                  <p>RS {product.price} .00</p>
-                  <p>{product.description}</p>
-                </div>
-                <button
-                  onClick={() => handleEdit(product)}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded mr-2 hover:bg-yellow-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
+    <div>
+      <Header />
+      <div className="min-h-screen flex flex-col items-center  bg-gray-100 p-4">
+        {/* Modal Form */}
+        {showForm && (
+          <ProductForm
+            productName={productName}
+            setProductName={setProductName}
+            price={price}
+            setPrice={setPrice}
+            description={description}
+            setDescription={setDescription}
+            file={file}
+            setFile={setFile}
+            handleSubmit={handleSubmit}
+            editingProduct={editingProduct}
+            message={message}
+            onClose={handleCloseForm}
+          />
         )}
+
+        {/* Display Products */}
+        <div className="mt-8  mx-auto">
+          <button
+            onClick={handleOpenForm}
+            className="mb-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Add New Vehicle
+          </button>
+          {products.length === 0 ? (
+            <p>No products uploaded yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-[1500px]">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white p-4 shadow-md rounded-lg flex flex-col items-center text-center"
+                >
+                  <img
+                    src={`data:image/jpeg;base64,${product.imageData}`}
+                    alt={product.name}
+                    className="w-auto h-38 object-cover rounded mb-auto"
+                  />
+                  <p className="font-semibold">{product.name}</p>
+                  <p className="text-sm text-gray-700">RS {product.price}.00</p>
+                  <p className="text-sm text-gray-500 mb-2">
+                    {product.description}
+                  </p>
+                  <div className="flex space-x-2 mt-4">
+                    <button
+                      onClick={() => handleEdit(product)}
+                      className="bg-yellow-500 text-white px-6 py-1 rounded hover:bg-yellow-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+      <footer className="text-gray-400 py-4 fixed bottom-0 w-full">
+        <div className="text-center">
+          <p>
+            &copy; {new Date().getFullYear()} Autovault. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
