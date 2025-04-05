@@ -65,4 +65,10 @@ public class AdminService {
         }
         return false;
     }
+
+    public List<ProductDetails> searchProducts(String keyword) {
+        return productDetailsRepository.searchProducts(keyword);
+    }
+
 }
+

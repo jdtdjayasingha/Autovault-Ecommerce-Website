@@ -78,4 +78,15 @@ public class AdminController {
         }
         return ResponseEntity.ok("Product deleted successfully");
     }
+
+    // SEARCH products by keyword (name or description)
+    @GetMapping("/products/search")
+    public ResponseEntity<List<ProductDetails>> searchProducts(@RequestParam("keyword") String keyword) {
+        List<ProductDetails> results = adminService.searchProducts(keyword);
+        if (results.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(results);
+    }
+
 }
