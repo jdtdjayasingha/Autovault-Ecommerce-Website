@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: Admin Module
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/Autovault?createDatabaseIfNotExist=true
+    username: root
+    password: 80117844
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
