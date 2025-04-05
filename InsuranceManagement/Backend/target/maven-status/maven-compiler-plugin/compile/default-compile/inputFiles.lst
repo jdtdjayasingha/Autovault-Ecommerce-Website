@@ -1,0 +1,12 @@
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\AppApplication.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\config\WebConfig.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\controller\HealthController.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\controller\InsurancePolicyController.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\dto\InsurancePolicyDto.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\model\InsurancePolicy.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\model\Vehicle.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\repository\InsurancePolicyRepository.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\repository\VehicleRepository.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\service\impl\InsurancePolicyServiceImpl.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\service\InsurancePolicyService.java
+C:\Users\Dilmi\Desktop\insurance\insurance-api\src\main\java\com\insurance\app\util\Constants.java
